@@ -284,9 +284,8 @@ void WriteRMF(vertex_index_data Input) {
 }
 
 int main() {
-    //vertex_index_data ToPrint = {};    
-    //ToPrint = LoadOBJData("kocka.obj");
-    //WriteRMF(ToPrint);
-    string *TestString = StringBuilder("Hello %d %f", 1, 15.12);
+    vertex_index_data ToPrint = {};    
+    ToPrint = LoadOBJData("kocka.obj");
+    WriteRMF(ToPrint);
     return 0;
 }
