@@ -284,8 +284,9 @@ void WriteRMF(vertex_index_data Input) {
 }
 
 int main() {
-    vertex_index_data ToPrint = {};    
-    ToPrint = LoadOBJData("kocka.obj");
-    WriteRMF(ToPrint);
+    //vertex_index_data ToPrint = {};    
+    //ToPrint = LoadOBJData("kocka.obj");
+    //WriteRMF(ToPrint);
+    string *TestString = ConcatenateString("Hello, ", "World!");
     return 0;
 }
