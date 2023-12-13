@@ -3,38 +3,6 @@
 
 #include <platform.h>
 
-inline int StringLength(char *A) {
-    int Result = 0;
-    while(*A++) Result++;
-    return Result;
-}
-
-inline void ConcatenateString(char *Dest,
-                       char *InputA, int InputASize,
-                       char *InputB, int InputBSize) {
-    for(int i = 0; i < InputASize; ++i) *Dest++ = *InputA++;
-    for(int i = 0; i < InputBSize; ++i) *Dest++ = *InputB++;
-    *Dest++ = 0;
-}
-
-inline b32 CompareString(char *InputA, char *InputB) {
-    b32 Result = 1;
-    u32 StringLengthA = StringLength(InputA);
-    u32 StringLengthB = StringLength(InputB);
-    if(StringLengthA != StringLengthB) return 0;
-    for(int i = 0; i < StringLengthA; i++)
-        if(InputA[i] != InputB[i]) return 0;
-    return 1;
-}
-
-inline b32 CompareString(char *InputA, int StringLengthA,
-                         char *InputB, int StringLengthB) {
-    b32 Result = 1;
-    if(StringLengthA != StringLengthB) return 0;
-    for(int i = 0; i < StringLengthA; i++)
-        if(InputA[i] != InputB[i]) return 0;
-    return 1;
-}
 
 
 inline char* SkipToBlankSpace(char *Input) {

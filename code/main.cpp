@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <ourmath.h>
+#include <strings.h>
 #include <auxiliary.cpp>
 
 #define MAX_OBJECT_NAME_LENGTH 32
@@ -282,10 +283,10 @@ void WriteRMF(vertex_index_data Input) {
     return;
 }
 
-
 int main() {
-    vertex_index_data ToPrint = {};    
-    ToPrint = LoadOBJData("kocka.obj");
-    WriteRMF(ToPrint);
+    //vertex_index_data ToPrint = {};    
+    //ToPrint = LoadOBJData("kocka.obj");
+    //WriteRMF(ToPrint);
+    string *TestString = StringBuilder("Hello %d %f", 1, 15.12);
     return 0;
 }
