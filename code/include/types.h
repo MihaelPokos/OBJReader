@@ -1,4 +1,3 @@
-/* date = November 2nd 2020 6:18 pm */
 #ifndef TYPES_H
 #define TYPES_H
 

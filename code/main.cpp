@@ -111,6 +111,7 @@ u32 SearchForVertex(vertex *VertexArray,
     return *NumberOfVertices - 1;
 }
 
+#if 0
 vertex_index_data LoadOBJData(char *InputFileName) {
     void *ReadData = Win32ReadEntireFile(InputFileName);
     char *CurrentChar = (char *)ReadData;
@@ -250,7 +251,7 @@ vertex_index_data LoadOBJData(char *InputFileName) {
     }
     return {VertexArray, NumberOfVertices, IndexArray, NumberOfIndices};
 }
-
+#endif
 void WriteRMF(vertex_index_data Input) {
     HANDLE RMFFileHandle  =  CreateFileA("output.rmf",
                                          FILE_APPEND_DATA ,
@@ -287,6 +288,8 @@ int main() {
     //vertex_index_data ToPrint = {};    
     //ToPrint = LoadOBJData("kocka.obj");
     //WriteRMF(ToPrint);
-    string *TestString = ConcatenateString("Hello, ", "World!");
+    string Test1 = {"Hello World How Are You", StringLength("Hello World How Are You")};
+    string Target = {" ", 1};
+    string_inplace **SplitString = SplitStringInplace(&Test1, &Target);
     return 0;
 }

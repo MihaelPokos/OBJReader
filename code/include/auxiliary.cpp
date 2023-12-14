@@ -1,25 +1,6 @@
 #ifndef AUXILIARY_CPP
 #define AUXILIARY_CPP
-
 #include <platform.h>
-
-
-
-inline char* SkipToBlankSpace(char *Input) {
-    while(*Input != ' ' && *Input != '\n' && *Input != '\0') Input++;
-    return Input;
-}
-
-inline char* SkipToEndOfLine(char *Input) {
-    while(*Input != '\n' && *Input != '\0') Input++;
-    return Input;
-}
-
-// inline char* GenerateFileNameString(char *A, char *B) {
-//     char *Result = (char *) malloc(sizeof(char) * (StringLength(A) + StringLength(B)));
-//     ConcatenateString(Result, A, StringLength(A), B, StringLength(B));
-//     return Result;
-// }
 
 void Win32WriteToLogFile() {
     HANDLE LogFileHandle =  CreateFileA("log.txt",
