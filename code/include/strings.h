@@ -115,10 +115,10 @@ inline string_inplace** SplitStringInplace(string *Input, string *SplitTarget) {
     
     string_inplace **ReturnStrings = (string_inplace **)malloc(sizeof(string_inplace *) * 
                                                              NumberOfSplits);
-    for(int i = 0; i < NumberOfSplits; i++) {
-        ReturnStrings[i] = (string_inplace *)malloc(sizeof(string_inplace));
-        ReturnStrings[i] = {};
-        }
+    // for(int i = 0; i < NumberOfSplits; i++) {
+    //     ReturnStrings[i] = (string_inplace *)malloc(sizeof(string_inplace));
+    //     ReturnStrings[i] = {};
+    //     }
     return ReturnStrings;
 }
 
