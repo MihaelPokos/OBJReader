@@ -67,7 +67,6 @@ inline string* ConcatenateString(char *InputA,
 }
 
 inline b32 CompareString(char *InputA, char *InputB) {
-    b32 Result = 1;
     u32 StringLengthA = StringLength(InputA);
     u32 StringLengthB = StringLength(InputB);
     if(StringLengthA != StringLengthB) return 0;
@@ -78,7 +77,6 @@ inline b32 CompareString(char *InputA, char *InputB) {
 
 inline b32 CompareString(string *InputA,
                          string *InputB) {
-    b32 Result = 1;
     if(InputA->Length != InputB->Length) return 0;
     for(int i = 0; i < InputA->Length; i++)
         if(InputA->Data[i] != InputB->Data[i]) return 0;
@@ -87,7 +85,6 @@ inline b32 CompareString(string *InputA,
 
 inline b32 CompareString(char *InputA, int LengthA,
                          char *InputB, int LengthB) {
-    b32 Result = 1;
     if(LengthA != LengthB) return 0;
     for(int i = 0; i < LengthA; i++)
         if(InputA[i] != InputB[i]) return 0;
@@ -95,31 +92,26 @@ inline b32 CompareString(char *InputA, int LengthA,
 }
 
 inline string_inplace** SplitStringInplace(string *Input, string *SplitTarget) {
-    int MaxCount = Input->Length - SplitTarget->Length;
+    u32 MaxCount = Input->Length - SplitTarget->Length;
     if(MaxCount < 0) return {};
-    char *CurrentChar = Input->Data;
     
-    u32 Splits[MAX_NUMBER_OF_SPLITS] = {};
-    int NumberOfSplits = 0;
-    int CurrentCharCounter = 0;
+    //Find split targets!
+    //The intended behaviour is that if there are multiple
+    //successive split targets (eg. "A_B__C"), that chunk
+    //will be counted as only one split.
+    //(It will split into "A", "B", "C".)
+    //NOTE: Not sure about this and the results of it,
+    //      could change in the future.
+    
+    u32 SplitCount = 0;
     for(int i = 0; i < MaxCount; i++) {
         if(CompareString(&Input->Data[i], SplitTarget->Length,
-                         SplitTarget->Data, SplitTarget->Length)) {
-            Splits[NumberOfSplits] = CurrentCharCounter;
-            CurrentCharCounter = 0;
-            NumberOfSplits++;
-        }
-        else CurrentCharCounter++;
+                         SplitTarget->Data, SplitTarget->Length))
+            SplitCount++;
     }
-    if(NumberOfSplits <= 0) return {};
+    for(int i = 0; i < SplitCount; i++);
     
-    string_inplace **ReturnStrings = (string_inplace **)malloc(sizeof(string_inplace *) * 
-                                                             NumberOfSplits);
-    // for(int i = 0; i < NumberOfSplits; i++) {
-    //     ReturnStrings[i] = (string_inplace *)malloc(sizeof(string_inplace));
-    //     ReturnStrings[i] = {};
-    //     }
-    return ReturnStrings;
+    return {};    
 }
 
 //The guiding principle for GetLine() implementation is that

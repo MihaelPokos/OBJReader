@@ -288,8 +288,8 @@ int main() {
     //vertex_index_data ToPrint = {};    
     //ToPrint = LoadOBJData("kocka.obj");
     //WriteRMF(ToPrint);
-    string Test1 = {"Hello World How Are You", StringLength("Hello World How Are You")};
-    string Target = {" ", 1};
-    string_inplace **SplitString = SplitStringInplace(&Test1, &Target);
+    string *Test1 = StringBuilder("apple\torange\tbanana");
+    string *Target = StringBuilder("\t");
+    string_inplace **SplitString = SplitStringInplace(Test1, Target);
     return 0;
 }
