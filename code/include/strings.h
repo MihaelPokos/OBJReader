@@ -2,7 +2,7 @@
 #define STRINGS_H
 
 #define MAX_TEMP_STRING_BUILDER_LENGTH 256
-#define MAX_NUMBER_OF_SPLITS 32
+#define MAX_NUMBER_OF_SPLITS 256
 
 
 //NOTE: The intended use for string_static is to be used
@@ -13,6 +13,11 @@ struct string {
     char *Data;
     u32  Length;
 } typedef string_inplace;
+
+struct split_string_return {
+    string_inplace *Data;
+    u32 Length;
+};
 
 //NOTE: In C/C++, the string null termintator '\0' doesn't 
 //      evaluate as a character. For example, the string "Hello"
@@ -91,11 +96,11 @@ inline b32 CompareString(char *InputA, int LengthA,
     return 1;
 }
 
-inline string_inplace** SplitStringInplace(string *Input, string *SplitTarget) {
+inline split_string_return* SplitStringInplace(string *Input, string *SplitTarget) {
     u32 MaxCount = Input->Length - SplitTarget->Length;
+    u32 SplitPositions[MAX_NUMBER_OF_SPLITS] = {};
     if(MaxCount < 0) return {};
     
-    //Find split targets!
     //The intended behaviour is that if there are multiple
     //successive split targets (eg. "A_B__C"), that chunk
     //will be counted as only one split.
@@ -104,12 +109,14 @@ inline string_inplace** SplitStringInplace(string *Input, string *SplitTarget) {
     //      could change in the future.
     
     u32 SplitCount = 0;
-    for(int i = 0; i < MaxCount; i++) {
+    for(int i = 0; i < MaxCount; i++)
         if(CompareString(&Input->Data[i], SplitTarget->Length,
-                         SplitTarget->Data, SplitTarget->Length))
-            SplitCount++;
-    }
-    for(int i = 0; i < SplitCount; i++);
+                         SplitTarget->Data, SplitTarget->Length));
+            SplitPositions[SplitCount++] = i;
+    
+    split_string_return *ReturnStrings =
+        (split_string_return *)malloc(sizeof(split_string_return));
+
     
     return {};    
 }
