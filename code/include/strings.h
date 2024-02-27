@@ -4,11 +4,6 @@
 #define MAX_TEMP_STRING_BUILDER_LENGTH 256
 #define MAX_NUMBER_OF_SPLITS 256
 
-
-//NOTE: The intended use for string_static is to be used
-//      with GetLine() on loaded files to mark the first
-//      char of the string along with the desired length.
-//      It doesn't contain the data of the whole string.
 struct string {
     char *Data;
     u32  Length;
@@ -16,6 +11,11 @@ struct string {
 
 struct split_string_return {
     string_inplace *Data;
+    u32 Length;
+};
+
+struct split_string_return_dummy {
+    string_inplace Data[MAX_NUMBER_OF_SPLITS + 1];
     u32 Length;
 };
 
@@ -33,7 +33,7 @@ inline u32 StringLength(char *A) {
 
 inline u32 LineLength(char *A) {
     u32 Result = 0;
-    while(*A != '\n' || *A != '\0') {
+    while(*A != '\n' && *A != '\0') {
         Result++;
         A++;
     }
@@ -59,13 +59,17 @@ inline string* StringBuilder(char *Input, ...) {
     return ReturnString;
 }
 
+/*
 inline string_inplace* StringBuilderStatic(char *Input, u32 Length) {
     string_inplace *ReturnString = (string_inplace *)malloc(sizeof(string));
     ReturnString->Data = Input;
     ReturnString->Length = Length;
     return ReturnString;
 }
+*/
 
+
+//There exists a C operator '##' for combining two strings!
 inline string* ConcatenateString(char *InputA,
                                  char *InputB) {
     return StringBuilder("%s%s", InputA, InputB);
@@ -97,34 +101,63 @@ inline b32 CompareString(char *InputA, int LengthA,
 }
 
 inline split_string_return* SplitStringInplace(string *Input, string *SplitTarget) {
-    u32 MaxCount = Input->Length - SplitTarget->Length;
-    u32 SplitPositions[MAX_NUMBER_OF_SPLITS] = {};
+    int MaxCount = Input->Length - SplitTarget->Length;
     if(MaxCount < 0) return {};
     
-    //The intended behaviour is that if there are multiple
+    //TODO: The future behaviour should be that if there are multiple
     //successive split targets (eg. "A_B__C"), that chunk
-    //will be counted as only one split.
-    //(It will split into "A", "B", "C".)
-    //NOTE: Not sure about this and the results of it,
-    //      could change in the future.
+    //should be counted as only one split.
+    //(It should split into "A", "B", "C".)
+    //This should be implemented along with memory arenas.
     
-    u32 SplitCount = 0;
-    for(int i = 0; i < MaxCount; i++)
+    //TODO: An interesting fail case is the string "......" with a split of "..".
+    //With a single "." split, it returns an empty array, but with a double it doesn't!
+    
+    int SplitPositions[MAX_NUMBER_OF_SPLITS] = {};
+    SplitPositions[0] = 0;
+    int SplitCount = 1;
+    
+    for(int i = 0; i < MaxCount; i++) {
         if(CompareString(&Input->Data[i], SplitTarget->Length,
-                         SplitTarget->Data, SplitTarget->Length));
-            SplitPositions[SplitCount++] = i;
+                         SplitTarget->Data, SplitTarget->Length))
+            SplitPositions[SplitCount++] = i + SplitTarget->Length;
+    }
+    SplitPositions[SplitCount++] = (Input->Length + 1);
     
-    split_string_return *ReturnStrings =
+    split_string_return_dummy ReturnStrings;
+    int MaxSplitCount = SplitCount - 1;
+    for(int i = 0; i < MaxSplitCount; i++) {
+        int TargetLength = (SplitPositions[i + 1] - SplitPositions[i]) - 1;
+        ReturnStrings.Data[i].Data   = &Input->Data[SplitPositions[i]];
+        ReturnStrings.Data[i].Length = TargetLength;
+    }
+    ReturnStrings.Data[MaxSplitCount] = {};
+    ReturnStrings.Length = SplitCount - 1;
+    
+    for(int i = 0; i < ReturnStrings.Length; i++) {
+        if(ReturnStrings.Data[i].Length == (SplitTarget->Length - 1)) {
+            for(int j = i; j < ReturnStrings.Length - 1; j++) {
+                ReturnStrings.Data[j] = ReturnStrings.Data[j + 1];
+            }
+            i--;
+            ReturnStrings.Length--;
+        }
+    }
+    
+    split_string_return *ReturnStringsPtr =
         (split_string_return *)malloc(sizeof(split_string_return));
-
-    
-    return {};    
+    ReturnStringsPtr->Data = (string_inplace *) malloc(sizeof(string_inplace) * ReturnStrings.Length);
+    ReturnStringsPtr->Length = ReturnStrings.Length;
+    for(int i = 0; i < ReturnStrings.Length; i++) {
+        ReturnStringsPtr->Data[i].Data   = ReturnStrings.Data[i].Data;
+        ReturnStringsPtr->Data[i].Length = ReturnStrings.Data[i].Length;
+    }
+    return ReturnStringsPtr;
 }
 
 //The guiding principle for GetLine() implementation is that
 //upon reading the file we wish to do our string operations
 //in place, without additional allocations.
-
 inline string_inplace GetLine(char *Input) {
     return {Input, LineLength(Input)};
 }
